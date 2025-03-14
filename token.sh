@@ -49,7 +49,7 @@ module.exports = {
   solidity: "0.8.28",
   networks: {
     pharos: {
-      url: "https://devnet.dplabs-internal.com",
+      url: "https://devnet.dplabs-internal.com/",
       accounts: process.env.PRIVATE_KEY ? [process.env.PRIVATE_KEY] : [],
     },
   },
