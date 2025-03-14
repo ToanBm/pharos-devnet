@@ -39,9 +39,9 @@ EOF
 
 # Step 4: Update hardhat.config.js with the proper configuration
 echo "Creating new hardhat.config file..."
-rm hardhat.config.ts
+rm hardhat.config.js
 
-cat <<'EOF' > hardhat.config.ts
+cat <<'EOF' > hardhat.config.js
 require("@nomicfoundation/hardhat-toolbox");
 require("dotenv").config();
 
