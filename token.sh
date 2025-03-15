@@ -66,7 +66,29 @@ cat <<EOF > .env
 PRIVATE_KEY=$PRIVATE_KEY
 EOF
 
-# Step 6: Deploying the smart contract
+# Step 6: Create script to deploy
+echo "Create cript to deploy..."
+mkdir scripts
+
+cat <<'EOF' > scripts/deploy.js
+async function main() {
+  const [deployer] = await ethers.getSigners();
+  console.log("Deploying contract with account:", deployer.address);
+
+  const Token = await ethers.getContractFactory("Token");
+  const token = await Token.deploy(1000000);
+  await token.waitForDeployment();
+
+  console.log("Token deployed to:", await token.getAddress());
+}
+
+main().catch((error) => {
+  console.error(error);
+  process.exitCode = 1;
+});
+EOF
+
+# Step 7: Deploying the smart contract
 # Compile the Smart Contract:
 npx hardhat compile
 
@@ -74,11 +96,7 @@ npx hardhat compile
 npx hardhat test
 
 # Deploy the Token Contract
-yes | npx hardhat ignition deploy ./ignition/modules/Token.js --network pharos
-
-
-
-
+npx hardhat run scripts/deploy.js --network pharos
 
 
 
