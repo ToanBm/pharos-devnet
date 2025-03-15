@@ -10,9 +10,11 @@ show() {
 # Step 1: Install hardhat
 echo "Install Hardhat..."
 npm init -y
+npm install --save-dev hardhat
+npm install @openzeppelin/contracts
+
 echo "Install dotenv..."
 npm install dotenv
-npm install --save-dev hardhat@2.22.19
 
 # Setup 2: Set Up the Project
 git clone https://github.com/PharosNetwork/examples
@@ -42,14 +44,15 @@ echo "Creating new hardhat.config file..."
 rm hardhat.config.js
 
 cat <<'EOF' > hardhat.config.js
-require("@nomicfoundation/hardhat-toolbox");
 require("dotenv").config();
+require("@nomicfoundation/hardhat-toolbox");
 
 module.exports = {
   solidity: "0.8.28",
   networks: {
     pharos: {
       url: "https://devnet.dplabs-internal.com/",
+      chainId: 50002,
       accounts: process.env.PRIVATE_KEY ? [process.env.PRIVATE_KEY] : [],
     },
   },
