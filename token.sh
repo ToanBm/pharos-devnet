@@ -17,8 +17,7 @@ echo "Install dotenv..."
 npm install dotenv
 
 # Setup 2: Set Up the Project
-git clone https://github.com/PharosNetwork/examples
-cd examples/token/hardhat/contract
+git clone https://github.com/PharosNetwork/examples && cd examples/token/hardhat/contract
 
 npm install
 
