@@ -67,26 +67,6 @@ PRIVATE_KEY=$PRIVATE_KEY
 EOF
 
 # Step 6: Create script to deploy
-echo "Create cript to deploy..."
-mkdir scripts
-
-cat <<'EOF' > scripts/deploy.js
-async function main() {
-  const [deployer] = await ethers.getSigners();
-  console.log("Deploying contract with account:", deployer.address);
-
-  const Token = await ethers.getContractFactory("Token");
-  const token = await Token.deploy(1000000);
-  await token.waitForDeployment();
-
-  console.log("Token deployed to:", await token.getAddress());
-}
-
-main().catch((error) => {
-  console.error(error);
-  process.exitCode = 1;
-});
-EOF
 
 # Step 7: Deploying the smart contract
 # Compile the Smart Contract:
@@ -95,9 +75,40 @@ npx hardhat compile
 # Test the Smart Contract
 npx hardhat test
 
-# Deploy the Token Contract
-npx hardhat run scripts/deploy.js --network pharos
+# Step 8: Deploying the smart contract
+echo "Do you want to deploy multiple contracts?"
+read -p "Enter the number of contracts to deploy: " COUNT
 
+# Validate input (must be a number)
+if ! [[ "$COUNT" =~ ^[0-9]+$ ]]; then
+  echo "Please enter a valid number!"
+  exit 1
+fi
+
+for ((i=1; i<=COUNT; i++))
+do
+  echo "🚀 Deploying contract $i..."
+
+  # Deploy the contract and extract the contract address
+  rm -rf ignition/deployments
+  CONTRACT_ADDRESS=$(yes | npx hardhat ignition deploy ./ignition/modules/Token.js --network pharos --reset | grep -oE '0x[a-fA-F0-9]{40}')
+
+  # Check if an address was retrieved
+  if [[ -z "$CONTRACT_ADDRESS" ]]; then
+    echo "❌ Unable to retrieve contract address!"
+    exit 1
+  fi
+
+  echo "✅ Contract $i deployed at: $CONTRACT_ADDRESS"
+  echo "-----------------------------------"
+
+  # Generate a random wait time between 9-15 seconds
+  RANDOM_WAIT=$((RANDOM % 7 + 9))
+  echo "⏳ Waiting for $RANDOM_WAIT seconds before deploying the next contract..."
+  sleep $RANDOM_WAIT
+done
+
+echo "🎉 Successfully deployed $COUNT contracts!"
 
 
 
