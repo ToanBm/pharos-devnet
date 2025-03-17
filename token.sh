@@ -90,7 +90,6 @@ do
   echo "🚀 Deploying contract $i..."
 
   # Deploy the contract and extract the contract address
-  rm -rf ignition/deployments
   CONTRACT_ADDRESS=$(yes | npx hardhat ignition deploy ./ignition/modules/Token.js --network pharos --reset | grep -oE '0x[a-fA-F0-9]{40}')
 
   # Check if an address was retrieved
